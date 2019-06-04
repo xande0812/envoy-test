@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  lb:
+    build: .
+    ports:
+      - "1119:1119"
+      - "1118:1118"
+    networks:
+      - lb
+      - web_web
+      - env-api_env-api
+
+networks:
+  lb: {}
+  web_web:
+    external: true
+  env-api_env-api:
+    external: true

@@ -3,7 +3,7 @@ admin:
   address:
     socket_address:
       address: 0.0.0.0
-      port_value: 9901
+      port_value: 1119
 
 static_resources:
   listeners:
@@ -11,7 +11,7 @@ static_resources:
       address:
         socket_address:
           address: 0.0.0.0
-          port_value: 8080
+          port_value: 1118
       filter_chains:
         - filters:
             - name: envoy.http_connection_manager
@@ -22,30 +22,48 @@ static_resources:
                 route_config:
                   name: local_route
                   virtual_hosts:
-                    - name: webpage
+                    - name: test_hosts
                       domains:
                         - "*"
                       routes:
                         - match:
-                            prefix: "/webpage"
+                            prefix: "/web"
                           route:
-                            cluster: webpage
+                            cluster: web
+                            prefix_rewrite: "/"
+                        - match:
+                            prefix: "/env-api"
+                          route:
+                            cluster: env-api
                             prefix_rewrite: "/"
                 http_filters:
                   - name: envoy.router
                     typed_config: {}
 
   clusters:
-    - name: webpage
+    - name: web
       connect_timeout: 0.25s
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
       load_assignment:
-        cluster_name: webpage
+        cluster_name: web
         endpoints:
           - lb_endpoints:
               - endpoint:
                   address:
                     socket_address:
-                      address: webpage
-                      port_value: 80
+                      address: web_web-sidecar_1
+                      port_value: 9998
+    - name: env-api
+      connect_timeout: 0.25s
+      type: STRICT_DNS
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: env-api
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: env-api_env-api-sidecar_1
+                      port_value: 8888

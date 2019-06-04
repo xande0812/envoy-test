@@ -1,19 +1,21 @@
 version: "3"
 
 services:
-  web-container:
+  env-api-container:
     build: .
+    environment:
+      - number=0001
     networks:
-      - web
+      - env-api
 
-  web-sidecar:
+  env-api-sidecar:
     build:
       context: .
       dockerfile: Dockerfile-sidecar
     ports:
-      - "9998:9998"
+      - "8888:8888"
     networks:
-      - web
+      - env-api
 
 networks:
-  web: {}
+  env-api: {}
