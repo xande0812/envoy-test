@@ -1,5 +1,12 @@
 version: "3"
+
 services:
+  front-elb:
+    build: ./front-elb
+    ports:
+      - "9901:9901"
+      - "8080:8080"
+
   webpage:
     build: ./webpage
     expose:
