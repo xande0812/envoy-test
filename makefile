@@ -1,5 +1,6 @@
 .PHONY: all
 all:
+	docker-compose -f zipkin/docker-compose.yaml up --build -d
 	docker-compose -f web/docker-compose.yaml up --build -d
 	docker-compose -f env-api/docker-compose.yaml up --build -d
 	docker-compose -f lb/docker-compose.yaml up --build -d
@@ -9,3 +10,4 @@ downall:
 	docker-compose -f lb/docker-compose.yaml down
 	docker-compose -f env-api/docker-compose.yaml down
 	docker-compose -f web/docker-compose.yaml down
+	docker-compose -f zipkin/docker-compose.yaml down

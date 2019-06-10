@@ -1,24 +1,22 @@
 version: "3"
 
 services:
-  env-api-container:
+  db-container:
     build: .
-    environment:
-      - number=0001
     networks:
-      - env-api
+      - db
 
-  env-api-sidecar:
+  db-sidecar:
     build:
       context: .
       dockerfile: Dockerfile-sidecar
     ports:
-      - "8888:8888"
+      - "7776:7776"
     networks:
-      - env-api
+      - db
       - zipkin_zipkin
 
 networks:
-  env-api: {}
+  db: {}
   zipkin_zipkin:
     external: true

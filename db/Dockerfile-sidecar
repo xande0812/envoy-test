@@ -1,0 +1,6 @@
+FROM envoyproxy/envoy-dev:bf1d29d501251752bc1c989ca579f5fc858167cf
+
+COPY etc/envoy/envoy.yaml /etc/envoy/envoy.yaml
+
+EXPOSE 7779
+EXPOSE 7776

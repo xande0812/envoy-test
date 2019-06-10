@@ -1,9 +1,18 @@
+#50003828742
 admin:
   access_log_path: "/dev/null"
   address:
     socket_address:
       address: 0.0.0.0
       port_value: 8889
+
+tracing:
+  http:
+    name: envoy.zipkin
+    typed_config:
+      "@type": type.googleapis.com/envoy.config.trace.v2.ZipkinConfig
+      collector_cluster: zipkin
+      collector_endpoint: "/api/v1/spans"
 
 static_resources:
   listeners:
@@ -17,6 +26,9 @@ static_resources:
             - name: envoy.http_connection_manager
               typed_config:
                 "@type": type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
+                generate_request_id: true
+                tracing:
+                  operation_name: egress
                 codec_type: AUTO
                 stat_prefix: ingress_http
                 route_config:
@@ -30,11 +42,26 @@ static_resources:
                             prefix: "/"
                           route:
                             cluster: api
+                          decorator:
+                            operation: EnvAPI
                 http_filters:
                   - name: envoy.router
                     typed_config: {}
 
   clusters:
+    - name: zipkin
+      connect_timeout: 7s
+      type: STRICT_DNS
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: zipkin
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: zipkin_zipkin-container_1
+                      port_value: 9411
     - name: api
       connect_timeout: 0.25s
       type: STRICT_DNS

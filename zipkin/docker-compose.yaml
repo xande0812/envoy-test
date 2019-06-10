@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  zipkin-container:
+    build: .
+    networks:
+      - zipkin
+    ports:
+      - "9411:9411"
+
+networks:
+  zipkin: {}

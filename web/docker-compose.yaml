@@ -14,6 +14,9 @@ services:
       - "9998:9998"
     networks:
       - web
+      - zipkin_zipkin
 
 networks:
   web: {}
+  zipkin_zipkin:
+    external: true

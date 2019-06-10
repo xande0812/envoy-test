@@ -10,9 +10,12 @@ services:
       - lb
       - web_web
       - env-api_env-api
+      - zipkin_zipkin
 
 networks:
   lb: {}
+  zipkin_zipkin:
+    external: true
   web_web:
     external: true
   env-api_env-api:
